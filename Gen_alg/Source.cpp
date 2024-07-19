@@ -8,6 +8,7 @@ void startGenetic()
 	geneticEngine.setCountParams(10);
 	geneticEngine.setCountPopulation(20);
 	geneticEngine.setMaxCountGenerations(100);
+	geneticEngine.setFindMaxOrMin(false);//true - find max; false - find min
 	geneticEngine.setPopulation();
 
 	for (int start = geneticEngine.getCountGeneration(), end = geneticEngine.getMaxGenerations(); 

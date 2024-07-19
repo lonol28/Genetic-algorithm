@@ -59,16 +59,18 @@ public:
 };
 
 int countMaxIdenticalIndividuums(vector<individual>& individuals);
-double bestFitnes(vector<individual>& individuals);
-int numberBestFitness(vector<individual>& individuals);
+double bestFitnes(vector<individual>& individuals, bool findMax);
+int numberBestFitness(vector<individual>& individuals, bool findMax);
 
 class engine : public genetic_data
 {
 private:
+	bool findMax{ true };
 	vector<individual> vectorIndividuals;
 	individual champion;
 
 public:
+	void setFindMaxOrMin(bool income);
 	void setPopulation(); //—оздание рандом попул€ции в зависимости от выставленных настроек
 	void championChek(); //—охран€ет и закидывает в новое поколение гарантировано 1 лучшего
 	//vector<individual>& getVectorPopulation(); //ѕредоставл€ет пр€мой доступ к вектору индивидумов

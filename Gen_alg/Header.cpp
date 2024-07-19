@@ -54,27 +54,25 @@ int countMaxIdenticalIndividuums(vector<individual>& individuals)
 	return count;
 }
 
-double bestFitnes(vector<individual>& individuals)
+double bestFitnes(vector<individual>& individuals, bool findMax)
 {
 	double bestResult = individuals.at(0).getFitness();
 	for (int i = 0; i < individuals.size(); i++)
-		if (individuals.at(i).getFitness() > bestResult)
+		if (findMax ? individuals.at(i).getFitness() > bestResult : individuals.at(i).getFitness() < bestResult)
 			bestResult = individuals.at(i).getFitness();
-
 	return bestResult;
 }
 
-int numberBestFitness(vector<individual>& individuals)
+int numberBestFitness(vector<individual>& individuals, bool findMax)
 {
 	double bestResult = individuals.at(0).getFitness();
 	int k = 0;
 	for (int i = 0; i < individuals.size(); i++)
-		if (individuals.at(i).getFitness() > bestResult)
+		if (findMax ? individuals.at(i).getFitness() > bestResult : individuals.at(i).getFitness() < bestResult)
 		{
 			bestResult = individuals.at(i).getFitness();
 			k = i;
-		}
-
+		}	
 	return k;
 }
 
@@ -235,21 +233,27 @@ void individual::calculateFitness()
 
 void engine::calculationFitnessAll()
 {
-	for (int i = 0; i < vectorIndividuals.size(); ++i)
-		vectorIndividuals[i].calculateFitness();
-
-	double max_res = vectorIndividuals[0].getFitness();
-	for (int i = 0; i < vectorIndividuals.size(); i++)
-		if (vectorIndividuals[i].getFitness() > max_res)
-			max_res = vectorIndividuals[i].getFitness();
-
 	double middle_res = 0;
-	for (int i = 0; i < vectorIndividuals.size(); i++)
-		middle_res = middle_res + vectorIndividuals[i].getFitness();
-	middle_res = middle_res / vectorIndividuals.size();
+	for (int i = 0; i < vectorIndividuals.size(); ++i)
+	{
+		vectorIndividuals[i].calculateFitness();
+		middle_res += vectorIndividuals[i].getFitness();
+	}
+	middle_res /= vectorIndividuals.size();
 
-	cout << "max fitness: " << max_res << endl;
+	double bestRes = vectorIndividuals[0].getFitness();
+	for (int i = 0; i < vectorIndividuals.size(); i++)
+		if (findMax ? vectorIndividuals[i].getFitness() > bestRes : vectorIndividuals[i].getFitness() < bestRes)
+			bestRes = vectorIndividuals[i].getFitness();
+	
+	cout << "=== " << getCountGeneration() << " generation ===" << endl;
+	cout << "best fitness: " << bestRes << endl;
 	cout << "avg fitness: " << middle_res << endl << endl;
+}
+
+void engine::setFindMaxOrMin(bool income)
+{
+	findMax = income;
 }
 
 void engine::setPopulation()
@@ -264,11 +268,13 @@ void engine::setPopulation()
 
 void engine::championChek()
 {
-	if (getCountGeneration() == 0 || bestFitnes(vectorIndividuals) > champion.getFitness())
-		champion = vectorIndividuals.at(numberBestFitness(vectorIndividuals));
+	if (findMax ? 
+		getCountGeneration() == 0 || bestFitnes(vectorIndividuals, findMax) > champion.getFitness() :
+		getCountGeneration() == 0 || bestFitnes(vectorIndividuals, findMax) < champion.getFitness())
+		champion = vectorIndividuals.at(numberBestFitness(vectorIndividuals, findMax));
 	else
 		vectorIndividuals.at(randomInt(0, getCountPopulation() - 1)) = champion;
-
+	
 	if (getCountGeneration() == getMaxGenerations() - 1)
 		cout << "\Best result is: " << champion.getFitness() << endl;
 }
@@ -318,8 +324,16 @@ void engine::tournament()
 		{
 			for (int j = i + 1; j < bobrs.size(); ++j)
 			{
-				if (bobrs.at(j).getFitness() > bobrs.at(numBobr).getFitness() && bobrs.at(j).getFitness() > bobrs.at(i).getFitness())
-					numBobr = j;
+				if (findMax)
+				{
+					if (bobrs.at(j).getFitness() > bobrs.at(numBobr).getFitness() && bobrs.at(j).getFitness() > bobrs.at(i).getFitness())
+						numBobr = j;
+				}
+				else
+				{
+					if (bobrs.at(j).getFitness() < bobrs.at(numBobr).getFitness() && bobrs.at(j).getFitness() < bobrs.at(i).getFitness())
+						numBobr = j;
+				}
 			}
 		}
 		localPopulation.push_back(individual(bobrs[numBobr].getLeftLimit(), bobrs[numBobr].getRightLimit(), bobrs[numBobr].getValue(), bobrs[numBobr].getFitness()));
