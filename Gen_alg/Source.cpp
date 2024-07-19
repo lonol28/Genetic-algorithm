@@ -10,7 +10,8 @@ void startGenetic()
 	geneticEngine.setMaxCountGenerations(100);
 	geneticEngine.setPopulation();
 
-	for (int i = 0; i < geneticEngine.getMaxGenerations(); ++i)
+	for (int start = geneticEngine.getCountGeneration(), end = geneticEngine.getMaxGenerations(); 
+		start < end; ++start, geneticEngine.plusCountGenerations())
 	{
 		geneticEngine.tournament();
 		geneticEngine.crossingBlend();
@@ -18,7 +19,6 @@ void startGenetic()
 
 		geneticEngine.calculationFitnessAll();
 		geneticEngine.championChek();
-		geneticEngine.plusCountGenerations();
 	}
 }
 
