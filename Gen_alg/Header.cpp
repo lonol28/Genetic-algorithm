@@ -1,6 +1,7 @@
 #include "Header.h"
 #include <random>
 #include <iostream>
+//#include <cmath>
 
 int randomInt(const int left, const int right)
 {
@@ -222,9 +223,10 @@ void individual::changeValue()
 
 void individual::calculateFitness()
 {
-	fitness = 0;
+	int A = 10;
+	fitness = A * values.size();
 	for (int i = 0; i < values.size(); i++)
-		fitness += values[i];
+		fitness += pow(values[i], 2) - A * cos(2 * _Pi_val * values[i]);
 }
 
 //
@@ -259,8 +261,8 @@ void engine::setFindMaxOrMin(bool income)
 void engine::setPopulation()
 {
 	int countParams = getCountParams();
-	vector<double> leftLimit(countParams, -10.0);
-	vector<double> rightLimit(countParams, 10.0);
+	vector<double> leftLimit(countParams, -5.12);
+	vector<double> rightLimit(countParams, 5.12);
 
 	for (int i = 0; i < getCountPopulation(); ++i)
 		vectorIndividuals.push_back(individual(leftLimit, rightLimit));
@@ -269,8 +271,8 @@ void engine::setPopulation()
 void engine::championChek()
 {
 	if (findMax ? 
-		getCountGeneration() == 0 || bestFitnes(vectorIndividuals, findMax) > champion.getFitness() :
-		getCountGeneration() == 0 || bestFitnes(vectorIndividuals, findMax) < champion.getFitness())
+		champion.getFitness() == NULL || bestFitnes(vectorIndividuals, findMax) > champion.getFitness() :
+		champion.getFitness() == NULL || bestFitnes(vectorIndividuals, findMax) < champion.getFitness())
 		champion = vectorIndividuals.at(numberBestFitness(vectorIndividuals, findMax));
 	else
 		vectorIndividuals.at(randomInt(0, getCountPopulation() - 1)) = champion;
@@ -286,7 +288,7 @@ vector<individual>& engine::getVectorPopulation()
 }
 */
 
-void engine::tournament()
+void engine::tournament(int k)
 {
 	int sizeReal = getCountPopulation();
 	vector<individual> localPopulation;
@@ -299,7 +301,6 @@ void engine::tournament()
 			break;
 		}
 
-		int k = 3;
 		vector<int> nums;
 		for (int i = 0; i < k; ++i)
 			nums.push_back(randomInt(0, sizeReal - 1));
@@ -390,6 +391,48 @@ void engine::crossingBlend()
 {
 	int sizeReal = getCountPopulation();
 	int i;
+	double procent = 0.5;
+	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
+	{
+		if (randomDouble(0, 1) >= getChanceOfCrossover())
+			continue;
+
+		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		{
+			if (randomDouble(0, 1) >= 0.50)
+				continue;
+
+			double leftValue{ vectorIndividuals[i].getValue().at(j) };
+			double rightValue{ vectorIndividuals[i + 1].getValue().at(j) };
+			if (rightValue < leftValue)
+				swap(leftValue, rightValue);
+
+			double plusMinus = procent * getDelta(leftValue, rightValue);
+
+			double leftLimit = vectorIndividuals[i].getLeftLimit()[j];
+			double rightLimit = vectorIndividuals[i+1].getRightLimit()[j];
+
+			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
+			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
+
+			vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
+			vectorIndividuals[i + 1].getValue().at(j) = randomDouble(left, right);
+		}
+	}
+}
+
+void engine::crossingBlendExperimental()
+{
+	int sizeReal = getCountPopulation();
+
+	double chanceForProcentage = (static_cast<double>(getCountGeneration())) / getMaxGenerations();
+	if (chanceForProcentage <= 0.2)
+		chanceForProcentage = 0.2;
+	else if (chanceForProcentage >= 0.8)
+		chanceForProcentage = 0.8;
+	double procent = (15.0 * (1 - chanceForProcentage)) / 100;
+
+	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
 		if (randomDouble(0, 1) >= getChanceOfCrossover())
@@ -401,38 +444,19 @@ void engine::crossingBlend()
 				continue;
 
 			double leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
-			double rightLimit{ vectorIndividuals[i].getRightLimit().at(j) };
-			
-			double chanceForProcentage = (static_cast<double>(getCountGeneration())) / getMaxGenerations();
-			if (chanceForProcentage <= 0.2)
-				chanceForProcentage = 0.2;
-			else if (chanceForProcentage >= 0.8)
-				chanceForProcentage = 0.8;
-
-			double procent = (20.0 * (1 - chanceForProcentage)) / 100;
-			
-			//procent = 0.1;		
-
+			double rightLimit{ vectorIndividuals[i+1].getRightLimit().at(j) };
 			double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
-
 			double leftValue{ vectorIndividuals[i].getValue().at(j) };
 			double rightValue{ vectorIndividuals[i+1].getValue().at(j) };
-			if (leftValue < rightValue)
-			{
-				double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
-				double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
-				vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
-				vectorIndividuals[i+1].getValue().at(j) = randomDouble(left, right);
-			}
-			else
-			{
-				double left{ rightValue - plusMinus > leftLimit ? rightValue - plusMinus : leftLimit };
-				double right{ leftValue + plusMinus < rightLimit ? leftValue + plusMinus : rightLimit };
+			if (rightValue < leftValue)
+				swap(leftValue, rightValue);
 
-				vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
-				vectorIndividuals[i + 1].getValue().at(j) = randomDouble(left, right);
-			}
+			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
+			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
+
+			vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
+			vectorIndividuals[i + 1].getValue().at(j) = randomDouble(left, right);
 		}
 	}
 }
