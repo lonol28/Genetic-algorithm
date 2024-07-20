@@ -77,12 +77,13 @@ public:
 
 	void calculationFitnessAll();
 	//1-й этап: отбор
-	void tournament(); //3 random => 1 winner
+	void tournament(int k = 3); //X random => 1 winner
 
 	//2-ой этап: скрещивание
 	void crossingCut(); //
 	void crossingSwap(); //Скрещивание путем обмена каких либо параметров между двух индивидумов
-	void crossingBlend(); //Analog Blend crossover - BLX | Аналог скрещивания смешением
+	void crossingBlend(); //Blend crossover - BLX | скрещивания смешением
+	void crossingBlendExperimental();
 
 	//3-ий этап: мутация
 	void mutationSpecial(); 
