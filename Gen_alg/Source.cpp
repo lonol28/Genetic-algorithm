@@ -1,9 +1,10 @@
-#include "Header.h"
-#include <iostream>
+#include "Engine_bool.h"
+#include "Engine_double.h"
+#include "Engine_int.h"
 
 void startGenetic()
 {
-	engine geneticEngine;
+	engine_DOUBLE geneticEngine;
 
 	geneticEngine.setCountParams(10);
 	geneticEngine.setCountPopulation(20);

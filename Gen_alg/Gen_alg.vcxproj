@@ -128,11 +128,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Header.cpp" />
+    <ClCompile Include="Individual.h" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="EngineBase.h" />
+    <ClInclude Include="Engine_bool.h" />
+    <ClInclude Include="Engine_double.h" />
+    <ClInclude Include="Engine_int.h" />
+    <ClInclude Include="GeneticData.h" />
+    <ClInclude Include="Other.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
