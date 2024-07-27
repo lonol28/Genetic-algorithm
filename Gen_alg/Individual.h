@@ -4,10 +4,6 @@
 
 using namespace std;
 
-//
-// individual
-//
-
 template<class T>
 class individual
 {
@@ -32,6 +28,10 @@ public:
 	void changeValue();
 	void calculateFitness();
 };
+
+//
+// Methods
+//
 
 template<class T>
 individual<T>::individual() :

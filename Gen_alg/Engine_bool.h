@@ -7,6 +7,10 @@ public:
 	void setPopulation();
 };
 
+//
+// Methods
+//
+
 void engine_BOOL::setPopulation()
 {
 	int countParams = getCountParams();

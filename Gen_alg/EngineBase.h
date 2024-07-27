@@ -3,10 +3,6 @@
 #include "Individual.h"
 #include "GeneticData.h"
 
-//
-// engine
-//
-
 template<class T>
 class engine : public genetic_data
 {
@@ -17,22 +13,26 @@ protected:
 
 public:
 	virtual void setPopulation() = 0;
-	void calculationFitnessAll();
 
+	void calculationFitnessAll();
 	void setFindMaxOrMin(bool income);
 	void championChek();
 
-	//1-й этап: отбор
-	void tournament(int k = 3); //X random => 1 winner
+	// Tournament selection
+	void tournament(int k = 3);
 
-	//2-ой этап: скрещивание
-	void crossingCut(); //
-	void crossingSwap(); //—крещивание путем обмена каких либо параметров между двух индивидумов
+	// Crossing
+	void crossingCut();
+	void crossingSwap();
 
-	//3-ий этап: мутаци€
-	void mutationNewRandomNumberForOneParam(); //Ќовое рандом значение дл€ одного параметра
-	void mutationNewRandomNumberForRandomParams(); //Ќовое рандом значение дл€ рандомных параметров
+	// Mutation
+	void mutationNewRandomNumberForOneParam();
+	void mutationNewRandomNumberForRandomParams();
 };
+
+//
+// Methods
+//
 
 template<class T>
 void engine<T>::calculationFitnessAll()
