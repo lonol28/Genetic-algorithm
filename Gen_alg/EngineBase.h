@@ -28,6 +28,7 @@ public:
 	// Mutation
 	void mutationNewRandomNumberForOneParam();
 	void mutationNewRandomNumberForRandomParams();
+	virtual void mutationSpecial() = 0;
 };
 
 //
