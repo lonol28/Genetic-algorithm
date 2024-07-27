@@ -3,36 +3,36 @@
 #include <iostream>
 //#include <cmath>
 
-int randomInt(const int left, const int right)
+int randomVal(const int left, const int right)
 {
 	default_random_engine randomEngine{ random_device{}() };
 	if (left < right)
 	{
-		uniform_int_distribution<int> randomInt{ left, right };
-		return randomInt(randomEngine);
+		uniform_int_distribution<int> randomVal{ left, right };
+		return randomVal(randomEngine);
 	}
 	else if (left > right)
 	{
-		uniform_int_distribution<int> randomInt{ right, left };
-		return randomInt(randomEngine);
+		uniform_int_distribution<int> randomVal{ right, left };
+		return randomVal(randomEngine);
 	}
 	else
 		return left;
 }
 
-double randomDouble(const double left, const double right)
+double randomVal(const double left, const double right)
 {
 
 	default_random_engine randomEngine{ random_device{}() };
 	if (left < right)
 	{
-		uniform_real_distribution<double> randomDouble{ left, right };
-		return randomDouble(randomEngine);
+		uniform_real_distribution<double> randomVal{ left, right };
+		return randomVal(randomEngine);
 	}
 	else if (left > right)
 	{
-		uniform_real_distribution<double> randomDouble{ right, left };
-		return randomDouble(randomEngine);
+		uniform_real_distribution<double> randomVal{ right, left };
+		return randomVal(randomEngine);
 	}
 	else
 		return left;
@@ -168,7 +168,7 @@ individual::individual(vector<double> leftLimitIncome, vector<double> rightLimit
 	values.resize(leftLimitIncome.size());
 	for (int i = 0; i < leftLimits.size(); ++i)
 	{
-		values[i] = randomDouble(leftLimits[i], rightLimits[i]);
+		values[i] = randomVal(leftLimits[i], rightLimits[i]);
 	}
 	calculateFitness();
 }
@@ -217,7 +217,7 @@ void individual::changeValue()
 {
 	for (int i = 0; i < leftLimits.size(); ++i)
 	{
-		values[i] = randomInt(leftLimits[i], rightLimits[i]);
+		values[i] = randomVal(leftLimits[i], rightLimits[i]);
 	}
 }
 
@@ -275,7 +275,7 @@ void engine::championChek()
 		champion.getFitness() == NULL || bestFitnes(vectorIndividuals, findMax) < champion.getFitness())
 		champion = vectorIndividuals.at(numberBestFitness(vectorIndividuals, findMax));
 	else
-		vectorIndividuals.at(randomInt(0, getCountPopulation() - 1)) = champion;
+		vectorIndividuals.at(randomVal(0, getCountPopulation() - 1)) = champion;
 	
 	if (getCountGeneration() == getMaxGenerations() - 1)
 		cout << "\Best result is: " << champion.getFitness() << endl;
@@ -303,14 +303,14 @@ void engine::tournament(int k)
 
 		vector<int> nums;
 		for (int i = 0; i < k; ++i)
-			nums.push_back(randomInt(0, sizeReal - 1));
+			nums.push_back(randomVal(0, sizeReal - 1));
 
 		for (int i = 0; i < k - 1; ++i)
 			for (int j = i + 1; j < k; ++j)
 			{
 				if (nums[i] == nums[j])
 				{
-					nums[i] = randomInt(0, sizeReal - 1);
+					nums[i] = randomVal(0, sizeReal - 1);
 					i = -1;
 					break;
 				}
@@ -347,10 +347,10 @@ void engine::crossingCut()
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomDouble(0, 1) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
-		int cutNum{ randomInt(1, getCountParams()) };
+		int cutNum{ randomVal(1, getCountParams()) };
 
 		for (int j = cutNum; j < getCountParams(); ++j)
 			swap(vectorIndividuals[i].getValue()[j], vectorIndividuals[i + 1].getValue()[j]);
@@ -363,12 +363,12 @@ void engine::crossingSwap()
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomDouble(0, 1) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
 		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
 		{
-			if (randomDouble(0, 1) >= 0.5)
+			if (randomVal(0.0, 1.0) >= 0.5)
 				continue;
 
 			swap(vectorIndividuals[i].getValue().at(j), vectorIndividuals[i + 1].getValue().at(j));
@@ -394,12 +394,12 @@ void engine::crossingBlend()
 	double procent = 0.5;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomDouble(0, 1) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
 		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
 		{
-			if (randomDouble(0, 1) >= 0.50)
+			if (randomVal(0.0, 1.0) >= 0.50)
 				continue;
 
 			double leftValue{ vectorIndividuals[i].getValue().at(j) };
@@ -415,8 +415,8 @@ void engine::crossingBlend()
 			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
 			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
-			vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
-			vectorIndividuals[i + 1].getValue().at(j) = randomDouble(left, right);
+			vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
+			vectorIndividuals[i + 1].getValue().at(j) = randomVal(left, right);
 		}
 	}
 }
@@ -435,12 +435,12 @@ void engine::crossingBlendExperimental()
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomDouble(0, 1) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
 		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
 		{
-			if (randomDouble(0, 1) >= 0.50)
+			if (randomVal(0.0, 1.0) >= 0.50)
 				continue;
 
 			double leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
@@ -455,8 +455,8 @@ void engine::crossingBlendExperimental()
 			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
 			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
-			vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
-			vectorIndividuals[i + 1].getValue().at(j) = randomDouble(left, right);
+			vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
+			vectorIndividuals[i + 1].getValue().at(j) = randomVal(left, right);
 		}
 	}
 }
@@ -479,21 +479,21 @@ void engine::mutationSpecial()
 
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
-		if (randomDouble(0, 1) > chanceGlobal)
+		if (randomVal(0.0, 1.0) > chanceGlobal)
 			continue;
 
-		bool random{ (randomDouble(0, 1) <= chanceForProcentage) ? false : true };
+		bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
 
 		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
 		{
-			if (randomDouble(0, 1) > chanceForOneParameter)
+			if (randomVal(0.0, 1.0) > chanceForOneParameter)
 				continue;
 
 			double leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
 			double rightLimit{ vectorIndividuals[i].getRightLimit().at(j) };
 
 			if (random)
-				vectorIndividuals[i].getValue().at(j) = randomDouble(leftLimit, rightLimit);
+				vectorIndividuals[i].getValue().at(j) = randomVal(leftLimit, rightLimit);
 			else
 			{
 				double value{ vectorIndividuals[i].getValue().at(j) };
@@ -501,7 +501,7 @@ void engine::mutationSpecial()
 				double left{ value - plusMinus > leftLimit ? value - plusMinus : leftLimit };
 				double right{ value + plusMinus < rightLimit ? value + plusMinus : rightLimit };
 
-				vectorIndividuals[i].getValue().at(j) = randomDouble(left, right);
+				vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
 			}
 		}
 	}
@@ -511,11 +511,11 @@ void engine::mutationNewRandomNumberForOneParam()
 {
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
-		if (randomDouble(0, 1) > getChanceOfMutation())
+		if (randomVal(0.0, 1.0) > getChanceOfMutation())
 			continue;
 
-		int local_rand_num = randomInt(0, getCountParams() - 1);
-		vectorIndividuals[i].getValue().at(local_rand_num) = randomDouble(vectorIndividuals[i].getLeftLimit().at(local_rand_num), vectorIndividuals[i].getRightLimit().at(local_rand_num));
+		int local_rand_num = randomVal(0, getCountParams() - 1);
+		vectorIndividuals[i].getValue().at(local_rand_num) = randomVal(vectorIndividuals[i].getLeftLimit().at(local_rand_num), vectorIndividuals[i].getRightLimit().at(local_rand_num));
 	}
 }
 
@@ -524,14 +524,14 @@ void engine::mutationNewRandomNumberForRandomParams()
 	double chanceForOneParam = 0.5;
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
-		if (randomDouble(0, 1) > getChanceOfMutation())
+		if (randomVal(0.0, 1.0) > getChanceOfMutation())
 			continue;
 
 		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
 		{
-			if (randomDouble(0, 1) > chanceForOneParam)
+			if (randomVal(0.0, 1.0) > chanceForOneParam)
 				continue;
-			vectorIndividuals[i].getValue().at(j) = randomDouble(vectorIndividuals[i].getLeftLimit().at(j), vectorIndividuals[i].getRightLimit().at(j));
+			vectorIndividuals[i].getValue().at(j) = randomVal(vectorIndividuals[i].getLeftLimit().at(j), vectorIndividuals[i].getRightLimit().at(j));
 		}
 	}
 }
