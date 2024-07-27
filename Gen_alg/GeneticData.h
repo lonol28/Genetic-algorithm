@@ -7,12 +7,12 @@ using namespace std;
 class genetic_data
 {
 private:
-	int countParams{ 4 }; //Количество параметров индивидума
-	int count_population{ 20 }; //Количество индивидумов в поколении
-	int maxGenerations{ 50 }; //Количество поколений [1:бесконечность]
-	int countGenerations{ 0 }; //Счетчик поколения
-	const double chanceOfCrossover{ 0.8 }; //базовая вероятность скрещивания [0.0:1.0]
-	const double chanceOfMutation{ 0.15 }; //базовая вероятность мутации индивидуума [0.0:1.0]
+	int countParams{ 4 };
+	int count_population{ 20 }; // How many individs in population
+	int maxGenerations{ 50 }; // How many populations
+	int countGenerations{ 0 }; // Count current population
+	const double chanceOfCrossover{ 0.8 };
+	const double chanceOfMutation{ 0.15 };
 
 public:
 	genetic_data();
@@ -20,20 +20,20 @@ public:
 	genetic_data(double chance1, double chance2, int maxgens);
 	genetic_data(int maxgens);
 
-	int getCountParams();
 	void setCountParams(int numberCountParams);
+	int getCountParams();
 	void setCountPopulation(int numberCountPopulation);
+	int getCountPopulation();
 	void setMaxCountGenerations(int newCountForPopulations);
+	int getMaxGenerations();
+	void plusCountGenerations();
+	int getCountGeneration();
 	double getChanceOfCrossover();
 	double getChanceOfMutation();
-	int getCountPopulation();
-	int getMaxGenerations();
-	int getCountGeneration();
-	void plusCountGenerations();
 };
 
 //
-// genetic_data
+// Methods
 //
 
 genetic_data::genetic_data()

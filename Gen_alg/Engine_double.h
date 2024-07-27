@@ -6,10 +6,17 @@ class engine_DOUBLE : public engine<double>
 public:
 	void setPopulation();
 
-	void crossingBlend(); //Blend crossover - BLX | скрещивания смешением
+	// Crossing
+	void crossingBlend();
 	void crossingBlendExperimental();
+
+	// Mutation
 	void mutationSpecial();
 };
+
+//
+// Methods
+//
 
 void engine_DOUBLE::setPopulation()
 {
