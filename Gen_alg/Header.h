@@ -3,8 +3,8 @@
 
 using namespace std;
 
-int randomInt(int left, int right);
-double randomDouble(double left, double right);
+int randomVal(int left, int right);
+double randomVal(double left, double right);
 
 class genetic_data
 {
