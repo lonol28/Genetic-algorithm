@@ -49,7 +49,7 @@ individual<T>::individual(vector<T> leftLimitIncome, vector<T> rightLimitIncome)
 	values.resize(leftLimitIncome.size());
 	for (int i = 0; i < leftLimits.size(); ++i)
 	{
-		values[i] = randomVal(leftLimits[i], rightLimits[i]);
+		values.at(i) = randomVal(leftLimits.at(i), rightLimits.at(i));
 	}
 	calculateFitness();
 }
@@ -104,18 +104,18 @@ void individual<T>::changeValue()
 {
 	for (int i = 0; i < leftLimits.size(); ++i)
 	{
-		values[i] = randomVal(leftLimits[i], rightLimits[i]);
+		values.at(i) = randomVal(leftLimits.at(i), rightLimits.at(i));
 	}
 }
 
 template<class T>
 void individual<T>::calculateFitness()
 {
-	int A = 10;
-	double Pi_value = 3.1415926535898;
-	fitness = A * values.size();
+	static const int A = 10;
+	static const double Pi_value = 3.1415926535898;
+	fitness = A * static_cast<int> (values.size());
 	for (int i = 0; i < values.size(); i++)
-		fitness += pow(values[i], 2) - A * cos(2 * Pi_value * values[i]);
+		fitness += pow(values.at(i), 2) - A * cos(2 * Pi_value * values.at(i));
 }
 
 template<class T>
@@ -127,7 +127,7 @@ int countMaxIdenticalIndividuums(vector<individual<T>>& individuals)
 		int countLocal = 0;
 		for (int j = 0; j < individuals.size(); ++j)
 		{
-			if ((individuals[i].getValue() == individuals[j].getValue()) && i != j)
+			if ((individuals.at(i).getValue() == individuals.at(j).getValue()) && i != j)
 				countLocal++;
 		}
 		if (count < countLocal)

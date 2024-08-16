@@ -44,8 +44,8 @@ double getDelta(double left, double right)
 	if (right < left)
 		swap(left, right);
 
-	if ((left >= 0.0 && right >= 0.0) || (left < 0 && right >= 0.0))
+	if ((left >= 0.0 && right >= 0.0) || (left < 0.0 && right >= 0.0))
 		return right - left;
-	else if (left < 0 && right < 0.0)
-		return (abs(right)) - left;
+	//else if (left < 0.0 && right < 0.0)
+	return (abs(right)) - left;
 }

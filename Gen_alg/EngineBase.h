@@ -41,15 +41,15 @@ void engine<T>::calculationFitnessAll()
 	double middle_res = 0;
 	for (int i = 0; i < vectorIndividuals.size(); ++i)
 	{
-		vectorIndividuals[i].calculateFitness();
-		middle_res += vectorIndividuals[i].getFitness();
+		vectorIndividuals.at(i).calculateFitness();
+		middle_res += vectorIndividuals.at(i).getFitness();
 	}
 	middle_res /= vectorIndividuals.size();
 
-	double bestRes = vectorIndividuals[0].getFitness();
+	double bestRes = vectorIndividuals.at(0).getFitness();
 	for (int i = 0; i < vectorIndividuals.size(); i++)
-		if (findMax ? vectorIndividuals[i].getFitness() > bestRes : vectorIndividuals[i].getFitness() < bestRes)
-			bestRes = vectorIndividuals[i].getFitness();
+		if (findMax ? vectorIndividuals.at(i).getFitness() > bestRes : vectorIndividuals.at(i).getFitness() < bestRes)
+			bestRes = vectorIndividuals.at(i).getFitness();
 
 	cout << "=== " << getCountGeneration() << " generation ===" << endl;
 	cout << "best fitness: " << bestRes << endl;
@@ -73,20 +73,20 @@ void engine<T>::championChek()
 		vectorIndividuals.at(randomVal(0, getCountPopulation() - 1)) = champion;
 
 	if (getCountGeneration() == getMaxGenerations() - 1)
-		cout << "\Best result is: " << champion.getFitness() << endl;
+		cout << "\nBest result is: " << champion.getFitness() << endl;
 }
 
 template<class T>
 void engine<T>::tournament(int k)
 {
-	int sizeReal = getCountPopulation();
+	static const int sizeReal{ getCountPopulation() };
 	vector<individual<T>> localPopulation;
 	while (true)
 	{
-		int sizeLocal = localPopulation.size();
+		int sizeLocal{ static_cast<int>(localPopulation.size()) };
 		if (sizeLocal == sizeReal)
 		{
-			vectorIndividuals = localPopulation;
+			vectorIndividuals = localPopulation ;
 			break;
 		}
 
@@ -97,9 +97,9 @@ void engine<T>::tournament(int k)
 		for (int i = 0; i < k - 1; ++i)
 			for (int j = i + 1; j < k; ++j)
 			{
-				if (nums[i] == nums[j])
+				if (nums.at(i) == nums.at(j))
 				{
-					nums[i] = randomVal(0, sizeReal - 1);
+					nums.at(i) = randomVal(0, sizeReal - 1);
 					i = -1;
 					break;
 				}
@@ -107,7 +107,7 @@ void engine<T>::tournament(int k)
 
 		vector<individual<T>> bobrs;
 		for (int i = 0; i < k; i++)
-			bobrs.push_back(individual<T>(vectorIndividuals[nums[i]].getLeftLimit(), vectorIndividuals[nums[i]].getRightLimit(), vectorIndividuals[nums[i]].getValue(), vectorIndividuals[nums[i]].getFitness()));
+			bobrs.push_back(individual<T>(vectorIndividuals[nums.at(i)].getLeftLimit(), vectorIndividuals[nums.at(i)].getRightLimit(), vectorIndividuals[nums.at(i)].getValue(), vectorIndividuals.at(nums.at(i)).getFitness()));
 
 		int numBobr = 0;
 		for (int i = 0; i < bobrs.size() - 1; ++i)
@@ -126,14 +126,14 @@ void engine<T>::tournament(int k)
 				}
 			}
 		}
-		localPopulation.push_back(individual<T>(bobrs[numBobr].getLeftLimit(), bobrs[numBobr].getRightLimit(), bobrs[numBobr].getValue(), bobrs[numBobr].getFitness()));
+		localPopulation.push_back(individual<T>(bobrs.at(numBobr).getLeftLimit(), bobrs.at(numBobr).getRightLimit(), bobrs.at(numBobr).getValue(), bobrs.at(numBobr).getFitness()));
 	}
 }
 
 template<class T>
 void engine<T>::crossingCut()
 {
-	int sizeReal = getCountPopulation();
+	static const int sizeReal = getCountPopulation();
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
@@ -143,26 +143,26 @@ void engine<T>::crossingCut()
 		int cutNum{ randomVal(1, getCountParams()) };
 
 		for (int j = cutNum; j < getCountParams(); ++j)
-			swap(vectorIndividuals[i].getValue()[j], vectorIndividuals[i + 1].getValue()[j]);
+			swap(vectorIndividuals.at(i).getValue()[j], vectorIndividuals[i + 1].getValue()[j]);
 	}
 }
 
 template<class T>
 void engine<T>::crossingSwap()
 {
-	int sizeReal = getCountPopulation();
+	static const int sizeReal = getCountPopulation();
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
 		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) >= 0.5)
 				continue;
 
-			swap(vectorIndividuals[i].getValue().at(j), vectorIndividuals[i + 1].getValue().at(j));
+			swap(vectorIndividuals.at(i).getValue().at(j), vectorIndividuals[i + 1].getValue().at(j));
 		}
 	}
 }
@@ -176,24 +176,24 @@ void engine<T>::mutationNewRandomNumberForOneParam()
 			continue;
 
 		int local_rand_num = randomVal(0, getCountParams() - 1);
-		vectorIndividuals[i].getValue().at(local_rand_num) = randomVal(vectorIndividuals[i].getLeftLimit().at(local_rand_num), vectorIndividuals[i].getRightLimit().at(local_rand_num));
+		vectorIndividuals.at(i).getValue().at(local_rand_num) = randomVal(vectorIndividuals.at(i).getLeftLimit().at(local_rand_num), vectorIndividuals.at(i).getRightLimit().at(local_rand_num));
 	}
 }
 
 template<class T>
 void engine<T>::mutationNewRandomNumberForRandomParams()
 {
-	double chanceForOneParam = 0.5;
+	static const double chanceForOneParam = 0.5;
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
 		if (randomVal(0.0, 1.0) > getChanceOfMutation())
 			continue;
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParam)
 				continue;
-			vectorIndividuals[i].getValue().at(j) = randomVal(vectorIndividuals[i].getLeftLimit().at(j), vectorIndividuals[i].getRightLimit().at(j));
+			vectorIndividuals.at(i).getValue().at(j) = randomVal(vectorIndividuals.at(i).getLeftLimit().at(j), vectorIndividuals.at(i).getRightLimit().at(j));
 		}
 	}
 }

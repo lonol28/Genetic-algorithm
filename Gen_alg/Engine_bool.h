@@ -41,15 +41,15 @@ inline void engine_BOOL::mutationSpecial()
 		if (randomVal(0.0, 1.0) > chanceGlobal)
 			continue;
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) < chanceForOneParam)
 				continue;
 
-			if (vectorIndividuals[i].getValue().at(j) == 0)
-				vectorIndividuals[i].getValue().at(j) = 1;
+			if (vectorIndividuals.at(i).getValue().at(j) == 0)
+				vectorIndividuals.at(i).getValue().at(j) = 1;
 			else
-				vectorIndividuals[i].getValue().at(j) = 0;
+				vectorIndividuals.at(i).getValue().at(j) = 0;
 		}
 	}
 }

@@ -38,7 +38,7 @@ void engine_INT::mutationSpecial()
 
 	double procent = (25.0 * (1 - chanceForProcentage)) / 100;
 
-	double chanceForOneParameter{ 0.50 };
+	static const double chanceForOneParameter{ 0.50 };
 
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
@@ -47,24 +47,24 @@ void engine_INT::mutationSpecial()
 
 		bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParameter)
 				continue;
 
-			int leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
-			int rightLimit{ vectorIndividuals[i].getRightLimit().at(j) };
+			int leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
+			int rightLimit{ vectorIndividuals.at(i).getRightLimit().at(j) };
 
 			if (random)
-				vectorIndividuals[i].getValue().at(j) = randomVal(leftLimit, rightLimit);
+				vectorIndividuals.at(i).getValue().at(j) = randomVal(leftLimit, rightLimit);
 			else
 			{
-				int value{ vectorIndividuals[i].getValue().at(j) };
+				int value{ vectorIndividuals.at(i).getValue().at(j) };
 				int plusMinus{ static_cast<int>(getDelta(leftLimit, rightLimit) * procent )};
 				int left{ value - plusMinus > leftLimit ? value - plusMinus : leftLimit };
 				int right{ value + plusMinus < rightLimit ? value + plusMinus : rightLimit };
 
-				vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
+				vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
 			}
 		}
 	}

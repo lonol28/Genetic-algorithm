@@ -30,41 +30,41 @@ void engine_DOUBLE::setPopulation()
 
 void engine_DOUBLE::crossingBlend()
 {
-	int sizeReal = getCountPopulation();
+	static const int sizeReal = getCountPopulation();
 	int i;
-	double procent = 0.5;
+	static const double procent{ 0.5 };
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
 		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) >= 0.50)
 				continue;
 
-			double leftValue{ vectorIndividuals[i].getValue().at(j) };
-			double rightValue{ vectorIndividuals[i + 1].getValue().at(j) };
+			double leftValue{ vectorIndividuals.at(i).getValue().at(j) };
+			double rightValue{ vectorIndividuals.at(i+1).getValue().at(j) };
 			if (rightValue < leftValue)
 				swap(leftValue, rightValue);
 
 			double plusMinus = procent * getDelta(leftValue, rightValue);
 
-			double leftLimit = vectorIndividuals[i].getLeftLimit()[j];
-			double rightLimit = vectorIndividuals[i + 1].getRightLimit()[j];
+			double leftLimit = vectorIndividuals.at(i).getLeftLimit().at(j);
+			double rightLimit = vectorIndividuals.at(i+1).getRightLimit().at(j);
 
 			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
 			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
-			vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
-			vectorIndividuals[i + 1].getValue().at(j) = randomVal(left, right);
+			vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
+			vectorIndividuals.at(i+1).getValue().at(j) = randomVal(left, right);
 		}
 	}
 }
 
 void engine_DOUBLE::crossingBlendExperimental()
 {
-	int sizeReal = getCountPopulation();
+	static const int sizeReal = getCountPopulation();
 
 	double chanceForProcentage = (static_cast<double>(getCountGeneration())) / getMaxGenerations();
 	if (chanceForProcentage <= 0.2)
@@ -79,16 +79,16 @@ void engine_DOUBLE::crossingBlendExperimental()
 		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) >= 0.50)
 				continue;
 
-			double leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
-			double rightLimit{ vectorIndividuals[i + 1].getRightLimit().at(j) };
+			double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
+			double rightLimit{ vectorIndividuals.at(i+1).getRightLimit().at(j) };
 			double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
-			double leftValue{ vectorIndividuals[i].getValue().at(j) };
-			double rightValue{ vectorIndividuals[i + 1].getValue().at(j) };
+			double leftValue{ vectorIndividuals.at(i).getValue().at(j) };
+			double rightValue{ vectorIndividuals.at(i+1).getValue().at(j) };
 
 			if (rightValue < leftValue)
 				swap(leftValue, rightValue);
@@ -96,8 +96,8 @@ void engine_DOUBLE::crossingBlendExperimental()
 			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
 			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
-			vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
-			vectorIndividuals[i + 1].getValue().at(j) = randomVal(left, right);
+			vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
+			vectorIndividuals.at(i+1).getValue().at(j) = randomVal(left, right);
 		}
 	}
 }
@@ -116,7 +116,7 @@ void engine_DOUBLE::mutationSpecial()
 
 	double procent = (25.0 * (1 - chanceForProcentage)) / 100;
 
-	double chanceForOneParameter{ 0.50 };
+	static const double chanceForOneParameter{ 0.50 };
 
 	for (int i = 0; i < getCountPopulation(); i++)
 	{
@@ -125,24 +125,24 @@ void engine_DOUBLE::mutationSpecial()
 
 		bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
 
-		for (int j = 0; j < vectorIndividuals[i].getValue().size(); ++j)
+		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParameter)
 				continue;
 
-			double leftLimit{ vectorIndividuals[i].getLeftLimit().at(j) };
-			double rightLimit{ vectorIndividuals[i].getRightLimit().at(j) };
+			double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
+			double rightLimit{ vectorIndividuals.at(i).getRightLimit().at(j) };
 
 			if (random)
-				vectorIndividuals[i].getValue().at(j) = randomVal(leftLimit, rightLimit);
+				vectorIndividuals.at(i).getValue().at(j) = randomVal(leftLimit, rightLimit);
 			else
 			{
-				double value{ vectorIndividuals[i].getValue().at(j) };
+				double value{ vectorIndividuals.at(i).getValue().at(j) };
 				double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
 				double left{ value - plusMinus > leftLimit ? value - plusMinus : leftLimit };
 				double right{ value + plusMinus < rightLimit ? value + plusMinus : rightLimit };
 
-				vectorIndividuals[i].getValue().at(j) = randomVal(left, right);
+				vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
 			}
 		}
 	}
