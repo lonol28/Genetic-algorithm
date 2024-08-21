@@ -38,21 +38,21 @@ public:
 template<class T>
 void engine<T>::calculationFitnessAll()
 {
-	double middle_res = 0;
-	for (int i = 0; i < vectorIndividuals.size(); ++i)
+	double middle_res{ 0 };
+	double best_res{ vectorIndividuals.at(0).getFitness() };
+	for (auto& individ : vectorIndividuals)
 	{
-		vectorIndividuals.at(i).calculateFitness();
-		middle_res += vectorIndividuals.at(i).getFitness();
+		individ.calculateFitness();
+		T fitnessIndivid{ individ.getFitness() };
+		middle_res += fitnessIndivid;
+
+		if (findMax ? fitnessIndivid > best_res : fitnessIndivid < best_res)
+			best_res = fitnessIndivid;
 	}
 	middle_res /= vectorIndividuals.size();
 
-	double bestRes = vectorIndividuals.at(0).getFitness();
-	for (int i = 0; i < vectorIndividuals.size(); i++)
-		if (findMax ? vectorIndividuals.at(i).getFitness() > bestRes : vectorIndividuals.at(i).getFitness() < bestRes)
-			bestRes = vectorIndividuals.at(i).getFitness();
-
 	cout << "=== " << getCountGeneration() << " generation ===" << endl;
-	cout << "best fitness: " << bestRes << endl;
+	cout << "best fitness: " << best_res << endl;
 	cout << "avg fitness: " << middle_res << endl << endl;
 }
 
@@ -81,15 +81,10 @@ void engine<T>::tournament(int k)
 {
 	static const int sizeReal{ getCountPopulation() };
 	vector<individual<T>> localPopulation;
-	while (true)
-	{
-		int sizeLocal{ static_cast<int>(localPopulation.size()) };
-		if (sizeLocal == sizeReal)
-		{
-			vectorIndividuals = localPopulation ;
-			break;
-		}
 
+	int sizeLocal{ 0 };
+	while (sizeLocal < sizeReal)
+	{
 		vector<int> nums;
 		for (int i = 0; i < k; ++i)
 			nums.push_back(randomVal(0, sizeReal - 1));
@@ -105,29 +100,26 @@ void engine<T>::tournament(int k)
 				}
 			}
 
-		vector<individual<T>> bobrs;
-		for (int i = 0; i < k; i++)
-			bobrs.push_back(individual<T>(vectorIndividuals[nums.at(i)].getLeftLimit(), vectorIndividuals[nums.at(i)].getRightLimit(), vectorIndividuals[nums.at(i)].getValue(), vectorIndividuals.at(nums.at(i)).getFitness()));
-
-		int numBobr = 0;
-		for (int i = 0; i < bobrs.size() - 1; ++i)
+		int numberChampion = nums.at(0);
+		for (int& number : nums)
 		{
-			for (int j = i + 1; j < bobrs.size(); ++j)
+			const T& fitnessCandidate{ vectorIndividuals.at(number).getFitness() };
+			const T& fitnessFromGlobalChampion{ vectorIndividuals.at(numberChampion).getFitness() };
+			if (findMax)
 			{
-				if (findMax)
-				{
-					if (bobrs.at(j).getFitness() > bobrs.at(numBobr).getFitness() && bobrs.at(j).getFitness() > bobrs.at(i).getFitness())
-						numBobr = j;
-				}
-				else
-				{
-					if (bobrs.at(j).getFitness() < bobrs.at(numBobr).getFitness() && bobrs.at(j).getFitness() < bobrs.at(i).getFitness())
-						numBobr = j;
-				}
+				if (fitnessCandidate > fitnessFromGlobalChampion)
+					numberChampion = number;
+			}
+			else
+			{
+				if (fitnessCandidate < fitnessFromGlobalChampion)
+					numberChampion = number;
 			}
 		}
-		localPopulation.push_back(individual<T>(bobrs.at(numBobr).getLeftLimit(), bobrs.at(numBobr).getRightLimit(), bobrs.at(numBobr).getValue(), bobrs.at(numBobr).getFitness()));
+		localPopulation.push_back(vectorIndividuals.at(numberChampion));
+		++sizeLocal;
 	}
+	vectorIndividuals = localPopulation;
 }
 
 template<class T>

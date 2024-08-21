@@ -47,10 +47,11 @@ individual<T>::individual(vector<T> leftLimitIncome, vector<T> rightLimitIncome)
 	rightLimits{ rightLimitIncome }
 {
 	values.resize(leftLimitIncome.size());
-	for (int i = 0; i < leftLimits.size(); ++i)
+	for (int i = 0; i < values.size(); ++i)
 	{
 		values.at(i) = randomVal(leftLimits.at(i), rightLimits.at(i));
 	}
+
 	calculateFitness();
 }
 
@@ -82,6 +83,7 @@ vector<T>& individual<T>::getRightLimit()
 {
 	return rightLimits;
 }
+
 template<class T>
 vector<T>& individual<T>::getValue()
 {
@@ -111,38 +113,43 @@ void individual<T>::changeValue()
 template<class T>
 void individual<T>::calculateFitness()
 {
-	static const int A = 10;
-	static const double Pi_value = 3.1415926535898;
+	static constexpr int A = 10;
+	static constexpr double Pi_value = 3.1415926535898;
 	fitness = A * static_cast<int> (values.size());
-	for (int i = 0; i < values.size(); i++)
-		fitness += pow(values.at(i), 2) - A * cos(2 * Pi_value * values.at(i));
+	for (const T& value : values)
+		fitness += pow(value, 2) - A * cos(2 * Pi_value * value);
 }
 
 template<class T>
 int countMaxIdenticalIndividuums(vector<individual<T>>& individuals)
 {
-	int count{ 0 };
-	for (int i = 0; i < individuals.size(); ++i)
+	int countIdentical{ 0 };
+	for (int identicalIndivids{ 0 }; auto& individOuter : individuals)
 	{
-		int countLocal = 0;
-		for (int j = 0; j < individuals.size(); ++j)
+		vector<T>& valuesIndividOuter{ individOuter.getValue() };
+		for (identicalIndivids = 0; auto& individInner : individuals)
 		{
-			if ((individuals.at(i).getValue() == individuals.at(j).getValue()) && i != j)
-				countLocal++;
+			if ((valuesIndividOuter == individInner.getValue()) && &individOuter != &individInner)
+				++identicalIndivids;
 		}
-		if (count < countLocal)
-			count = countLocal;
+
+		if (countIdentical < identicalIndivids)
+			countIdentical = identicalIndivids;
 	}
-	return count;
+
+	return countIdentical;
 }
 
 template<class T>
 double bestFitnes(vector<individual<T>>& individuals, bool findMax)
 {
 	double bestResult = individuals.at(0).getFitness();
-	for (int i = 0; i < individuals.size(); i++)
-		if (findMax ? individuals.at(i).getFitness() > bestResult : individuals.at(i).getFitness() < bestResult)
-			bestResult = individuals.at(i).getFitness();
+
+	for (auto& individ : individuals)
+		if (const T& fitnessOfIndivid{ individ.getFitness() }; 
+			findMax ? fitnessOfIndivid > bestResult : fitnessOfIndivid < bestResult)
+			bestResult = fitnessOfIndivid;
+
 	return bestResult;
 }
 

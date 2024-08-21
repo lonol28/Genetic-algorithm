@@ -48,13 +48,13 @@ void engine_DOUBLE::crossingBlend()
 			if (rightValue < leftValue)
 				swap(leftValue, rightValue);
 
-			double plusMinus = procent * getDelta(leftValue, rightValue);
+			const double plusMinus = procent * getDelta(leftValue, rightValue);
 
-			double leftLimit = vectorIndividuals.at(i).getLeftLimit().at(j);
-			double rightLimit = vectorIndividuals.at(i+1).getRightLimit().at(j);
+			const double leftLimit = vectorIndividuals.at(i).getLeftLimit().at(j);
+			const double rightLimit = vectorIndividuals.at(i+1).getRightLimit().at(j);
 
-			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
-			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
+			const double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
+			const double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
 			vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
 			vectorIndividuals.at(i+1).getValue().at(j) = randomVal(left, right);
@@ -71,7 +71,7 @@ void engine_DOUBLE::crossingBlendExperimental()
 		chanceForProcentage = 0.2;
 	else if (chanceForProcentage >= 0.8)
 		chanceForProcentage = 0.8;
-	double procent = (15.0 * (1 - chanceForProcentage)) / 100;
+	const double procent = (15.0 * (1 - chanceForProcentage)) / 100;
 
 	int i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
@@ -84,17 +84,17 @@ void engine_DOUBLE::crossingBlendExperimental()
 			if (randomVal(0.0, 1.0) >= 0.50)
 				continue;
 
-			double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
-			double rightLimit{ vectorIndividuals.at(i+1).getRightLimit().at(j) };
-			double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
+			const double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
+			const double rightLimit{ vectorIndividuals.at(i+1).getRightLimit().at(j) };
+			const double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
 			double leftValue{ vectorIndividuals.at(i).getValue().at(j) };
 			double rightValue{ vectorIndividuals.at(i+1).getValue().at(j) };
 
 			if (rightValue < leftValue)
 				swap(leftValue, rightValue);
 
-			double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
-			double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
+			const double left{ leftValue - plusMinus > leftLimit ? leftValue - plusMinus : leftLimit };
+			const double right{ rightValue + plusMinus < rightLimit ? rightValue + plusMinus : rightLimit };
 
 			vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
 			vectorIndividuals.at(i+1).getValue().at(j) = randomVal(left, right);
@@ -114,7 +114,7 @@ void engine_DOUBLE::mutationSpecial()
 	else if (chanceForProcentage >= 0.8)
 		chanceForProcentage = 0.8;
 
-	double procent = (25.0 * (1 - chanceForProcentage)) / 100;
+	const double procent = (25.0 * (1 - chanceForProcentage)) / 100;
 
 	static const double chanceForOneParameter{ 0.50 };
 
@@ -123,24 +123,24 @@ void engine_DOUBLE::mutationSpecial()
 		if (randomVal(0.0, 1.0) > chanceGlobal)
 			continue;
 
-		bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
+		const bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
 
 		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParameter)
 				continue;
 
-			double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
-			double rightLimit{ vectorIndividuals.at(i).getRightLimit().at(j) };
+			const double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
+			const double rightLimit{ vectorIndividuals.at(i).getRightLimit().at(j) };
 
 			if (random)
 				vectorIndividuals.at(i).getValue().at(j) = randomVal(leftLimit, rightLimit);
 			else
 			{
-				double value{ vectorIndividuals.at(i).getValue().at(j) };
-				double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
-				double left{ value - plusMinus > leftLimit ? value - plusMinus : leftLimit };
-				double right{ value + plusMinus < rightLimit ? value + plusMinus : rightLimit };
+				const double value{ vectorIndividuals.at(i).getValue().at(j) };
+				const double plusMinus{ getDelta(leftLimit, rightLimit) * procent };
+				const double left{ value - plusMinus > leftLimit ? value - plusMinus : leftLimit };
+				const double right{ value + plusMinus < rightLimit ? value + plusMinus : rightLimit };
 
 				vectorIndividuals.at(i).getValue().at(j) = randomVal(left, right);
 			}
