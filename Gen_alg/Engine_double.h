@@ -20,7 +20,7 @@ public:
 
 void engine_DOUBLE::setPopulation()
 {
-	int countParams = getCountParams();
+	const int countParams = getCountParams();
 	vector<double> leftLimit(countParams, -5.12);
 	vector<double> rightLimit(countParams, 5.12);
 
@@ -30,17 +30,20 @@ void engine_DOUBLE::setPopulation()
 
 void engine_DOUBLE::crossingBlend()
 {
-	static const int sizeReal = getCountPopulation();
-	int i;
+	static const double chanceCrossover{ getChanceOfCrossover() };
+	static const int sizeReal{ getCountPopulation() };
 	static const double procent{ 0.5 };
+	static const double chanceForOneParam{ 0.5 };
+
+	size_t i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= chanceCrossover)
 			continue;
 
-		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
+		for (size_t j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
-			if (randomVal(0.0, 1.0) >= 0.50)
+			if (randomVal(0.0, 1.0) >= chanceForOneParam)
 				continue;
 
 			double leftValue{ vectorIndividuals.at(i).getValue().at(j) };
@@ -64,7 +67,9 @@ void engine_DOUBLE::crossingBlend()
 
 void engine_DOUBLE::crossingBlendExperimental()
 {
+	static const double chanceCrossover{ getChanceOfCrossover() };
 	static const int sizeReal = getCountPopulation();
+	static const double chanceForOneParam{ 0.5 };
 
 	double chanceForProcentage = (static_cast<double>(getCountGeneration())) / getMaxGenerations();
 	if (chanceForProcentage <= 0.2)
@@ -73,15 +78,15 @@ void engine_DOUBLE::crossingBlendExperimental()
 		chanceForProcentage = 0.8;
 	const double procent = (15.0 * (1 - chanceForProcentage)) / 100;
 
-	int i;
+	size_t i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
-		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
+		if (randomVal(0.0, 1.0) >= chanceCrossover)
 			continue;
 
-		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
+		for (size_t j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
-			if (randomVal(0.0, 1.0) >= 0.50)
+			if (randomVal(0.0, 1.0) >= chanceForOneParam)
 				continue;
 
 			const double leftLimit{ vectorIndividuals.at(i).getLeftLimit().at(j) };
@@ -118,14 +123,14 @@ void engine_DOUBLE::mutationSpecial()
 
 	static const double chanceForOneParameter{ 0.50 };
 
-	for (int i = 0; i < getCountPopulation(); i++)
+	for (size_t i = 0; i < getCountPopulation(); i++)
 	{
 		if (randomVal(0.0, 1.0) > chanceGlobal)
 			continue;
 
 		const bool random{ (randomVal(0.0, 1.0) <= chanceForProcentage) ? false : true };
 
-		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
+		for (size_t j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParameter)
 				continue;
