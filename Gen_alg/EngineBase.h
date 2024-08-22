@@ -82,15 +82,14 @@ void engine<T>::tournament(int k)
 	static const int sizeReal{ getCountPopulation() };
 	vector<individual<T>> localPopulation;
 
-	int sizeLocal{ 0 };
-	while (sizeLocal < sizeReal)
+	for (int sizeLocal{ 0 }; sizeLocal < sizeReal; ++sizeLocal)
 	{
 		vector<int> nums;
-		for (int i = 0; i < k; ++i)
+		for (size_t i = 0; i < k; ++i)
 			nums.push_back(randomVal(0, sizeReal - 1));
 
-		for (int i = 0; i < k - 1; ++i)
-			for (int j = i + 1; j < k; ++j)
+		for (size_t i = 0; i < k - 1; ++i)
+			for (size_t j = i + 1; j < k; ++j)
 			{
 				if (nums.at(i) == nums.at(j))
 				{
@@ -101,23 +100,27 @@ void engine<T>::tournament(int k)
 			}
 
 		int numberChampion = nums.at(0);
-		for (int& number : nums)
+		for (T fitnessFromGlobalChampion{ vectorIndividuals.at(numberChampion).getFitness() }; int& number : nums)
 		{
-			const T& fitnessCandidate{ vectorIndividuals.at(number).getFitness() };
-			const T& fitnessFromGlobalChampion{ vectorIndividuals.at(numberChampion).getFitness() };
+			const T& fitnessCandidate{ vectorIndividuals.at(number).getFitness() };			
 			if (findMax)
 			{
 				if (fitnessCandidate > fitnessFromGlobalChampion)
+				{
 					numberChampion = number;
+					fitnessFromGlobalChampion = fitnessCandidate;
+				}	
 			}
 			else
 			{
 				if (fitnessCandidate < fitnessFromGlobalChampion)
+				{
 					numberChampion = number;
+					fitnessFromGlobalChampion = fitnessCandidate;
+				}
 			}
 		}
 		localPopulation.push_back(vectorIndividuals.at(numberChampion));
-		++sizeLocal;
 	}
 	vectorIndividuals = localPopulation;
 }
