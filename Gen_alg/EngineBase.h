@@ -82,7 +82,7 @@ void engine<T>::tournament(int k)
 	static const int sizeReal{ getCountPopulation() };
 	vector<individual<T>> localPopulation;
 
-	for (int sizeLocal{ 0 }; sizeLocal < sizeReal; ++sizeLocal)
+	for (size_t sizeLocal{ 0 }; sizeLocal < sizeReal; ++sizeLocal)
 	{
 		vector<int> nums;
 		for (size_t i = 0; i < k; ++i)
@@ -165,13 +165,13 @@ void engine<T>::crossingSwap()
 template<class T>
 void engine<T>::mutationNewRandomNumberForOneParam()
 {
-	for (int i = 0; i < getCountPopulation(); i++)
+	for (static const double chanceOfMutation{ getChanceOfMutation() }; individual<T>&individ : vectorIndividuals)
 	{
-		if (randomVal(0.0, 1.0) > getChanceOfMutation())
+		if (randomVal(0.0, 1.0) > chanceOfMutation)
 			continue;
 
-		int local_rand_num = randomVal(0, getCountParams() - 1);
-		vectorIndividuals.at(i).getValue().at(local_rand_num) = randomVal(vectorIndividuals.at(i).getLeftLimit().at(local_rand_num), vectorIndividuals.at(i).getRightLimit().at(local_rand_num));
+		int parameterNumber{ randomVal(0, getCountParams() - 1) };
+		individ.getValue().at(parameterNumber) = randomVal(individ.getLeftLimit().at(parameterNumber), individ.getRightLimit().at(parameterNumber));
 	}
 }
 
