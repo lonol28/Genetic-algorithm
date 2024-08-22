@@ -12,12 +12,12 @@ void startGenetic()
 	geneticEngine.setFindMaxOrMin(false);//true - find max; false - find min
 	geneticEngine.setPopulation();
 
-	for (int start = geneticEngine.getCountGeneration(), end = geneticEngine.getMaxGenerations(); 
+	for (size_t start = geneticEngine.getCountGeneration(), end = geneticEngine.getMaxGenerations(); 
 		start < end; ++start, geneticEngine.plusCountGenerations())
 	{
 		geneticEngine.tournament();
 		geneticEngine.crossingBlend();
-		geneticEngine.mutationNewRandomNumberForRandomParams();
+		geneticEngine.mutationNewRandomNumberForOneParam();
 
 		geneticEngine.calculationFitnessAll();
 		geneticEngine.championChek();

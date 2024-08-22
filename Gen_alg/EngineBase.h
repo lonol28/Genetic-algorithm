@@ -129,7 +129,7 @@ template<class T>
 void engine<T>::crossingCut()
 {
 	static const int sizeReal = getCountPopulation();
-	int i;
+	size_t i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
 		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
@@ -137,7 +137,7 @@ void engine<T>::crossingCut()
 
 		int cutNum{ randomVal(1, getCountParams()) };
 
-		for (int j = cutNum; j < getCountParams(); ++j)
+		for (size_t j = cutNum; j < getCountParams(); ++j)
 			swap(vectorIndividuals.at(i).getValue()[j], vectorIndividuals[i + 1].getValue()[j]);
 	}
 }
@@ -146,13 +146,13 @@ template<class T>
 void engine<T>::crossingSwap()
 {
 	static const int sizeReal = getCountPopulation();
-	int i;
+	size_t i;
 	for (sizeReal % 2 == 0 ? i = 0 : i = 1; i < sizeReal; i = i + 2)
 	{
 		if (randomVal(0.0, 1.0) >= getChanceOfCrossover())
 			continue;
 
-		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
+		for (size_t j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
 		{
 			if (randomVal(0.0, 1.0) >= 0.5)
 				continue;

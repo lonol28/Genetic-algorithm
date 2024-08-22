@@ -16,9 +16,6 @@ private:
 
 public:
 	genetic_data();
-	genetic_data(int countParams, int count_population);
-	genetic_data(double chance1, double chance2, int maxgens);
-	genetic_data(int maxgens);
 
 	void setCountParams(int numberCountParams);
 	int getCountParams();
@@ -37,21 +34,6 @@ public:
 //
 
 genetic_data::genetic_data()
-{}
-
-genetic_data::genetic_data(int countParams, int count_population) :
-	countParams{ countParams },
-	count_population{ count_population }
-{}
-
-genetic_data::genetic_data(double chance1, double chance2, int maxgens) :
-	chanceOfCrossover{ chance1 },
-	chanceOfMutation{ chance2 },
-	maxGenerations{ maxgens }
-{}
-
-genetic_data::genetic_data(int maxgens) :
-	maxGenerations{ maxgens }
 {}
 
 int genetic_data::getCountParams()
@@ -100,7 +82,7 @@ int genetic_data::getCountGeneration()
 	return countGenerations;
 }
 
-void genetic_data::plusCountGenerations()
+inline void genetic_data::plusCountGenerations()
 {
-	countGenerations++;
+	++countGenerations;
 }
