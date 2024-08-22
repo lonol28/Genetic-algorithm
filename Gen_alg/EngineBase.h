@@ -165,12 +165,13 @@ void engine<T>::crossingSwap()
 template<class T>
 void engine<T>::mutationNewRandomNumberForOneParam()
 {
-	for (static const double chanceOfMutation{ getChanceOfMutation() }; individual<T>&individ : vectorIndividuals)
+	static const int countParameters{ getCountParams() - 1 };
+	for (static const double chanceOfMutation{ getChanceOfMutation() }; individual<T>& individ : vectorIndividuals)
 	{
 		if (randomVal(0.0, 1.0) > chanceOfMutation)
 			continue;
 
-		int parameterNumber{ randomVal(0, getCountParams() - 1) };
+		int parameterNumber{ randomVal(0, countParameters) };
 		individ.getValue().at(parameterNumber) = randomVal(individ.getLeftLimit().at(parameterNumber), individ.getRightLimit().at(parameterNumber));
 	}
 }
@@ -179,16 +180,22 @@ template<class T>
 void engine<T>::mutationNewRandomNumberForRandomParams()
 {
 	static const double chanceForOneParam = 0.5;
-	for (int i = 0; i < getCountPopulation(); i++)
+
+	for (static const double chanceOfMutation{ getChanceOfMutation() }; individual<T>& individ : vectorIndividuals)
 	{
-		if (randomVal(0.0, 1.0) > getChanceOfMutation())
+		if (randomVal(0.0, 1.0) > chanceOfMutation)
 			continue;
 
-		for (int j = 0; j < vectorIndividuals.at(i).getValue().size(); ++j)
+		for (size_t numberParameter{ 0 }; T& individValue : individ.getValue())
 		{
 			if (randomVal(0.0, 1.0) > chanceForOneParam)
+			{
+				++numberParameter;
 				continue;
-			vectorIndividuals.at(i).getValue().at(j) = randomVal(vectorIndividuals.at(i).getLeftLimit().at(j), vectorIndividuals.at(i).getRightLimit().at(j));
+			}
+
+			individValue = randomVal(individ.getLeftLimit().at(numberParameter), individ.getRightLimit().at(numberParameter));
+			++numberParameter;
 		}
 	}
 }

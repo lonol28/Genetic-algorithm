@@ -17,7 +17,7 @@ void startGenetic()
 	{
 		geneticEngine.tournament();
 		geneticEngine.crossingBlend();
-		geneticEngine.mutationNewRandomNumberForOneParam();
+		geneticEngine.mutationNewRandomNumberForRandomParams();
 
 		geneticEngine.calculationFitnessAll();
 		geneticEngine.championChek();
