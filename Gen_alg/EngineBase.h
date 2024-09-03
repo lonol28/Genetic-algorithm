@@ -43,7 +43,7 @@ void engine<T>::calculationFitnessAll()
 	for (auto& individ : vectorIndividuals)
 	{
 		individ.calculateFitness();
-		T fitnessIndivid{ individ.getFitness() };
+		T fitnessIndivid{static_cast<T>(individ.getFitness()) };
 		middle_res += fitnessIndivid;
 
 		if (findMax ? fitnessIndivid > best_res : fitnessIndivid < best_res)
@@ -100,9 +100,9 @@ void engine<T>::tournament(int k)
 			}
 
 		int numberChampion = nums.at(0);
-		for (T fitnessFromGlobalChampion{ vectorIndividuals.at(numberChampion).getFitness() }; int& number : nums)
+		for (T fitnessFromGlobalChampion{ static_cast<T>(vectorIndividuals.at(numberChampion).getFitness() )}; int& number : nums)
 		{
-			const T& fitnessCandidate{ vectorIndividuals.at(number).getFitness() };			
+			const T& fitnessCandidate{ static_cast<T>(vectorIndividuals.at(number).getFitness()) };			
 			if (findMax)
 			{
 				if (fitnessCandidate > fitnessFromGlobalChampion)

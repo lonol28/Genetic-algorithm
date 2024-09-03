@@ -4,7 +4,7 @@
 
 void startGenetic()
 {
-	engine_DOUBLE geneticEngine;
+	engine_BOOL geneticEngine;
 
 	geneticEngine.setCountParams(10);
 	geneticEngine.setCountPopulation(50);
@@ -16,7 +16,7 @@ void startGenetic()
 		start < end; ++start, geneticEngine.plusCountGenerations())
 	{
 		geneticEngine.tournament();
-		geneticEngine.crossingBlend();
+		geneticEngine.crossingSwap();
 		geneticEngine.mutationNewRandomNumberForOneParam();
 
 		geneticEngine.calculationFitnessAll();

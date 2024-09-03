@@ -146,7 +146,7 @@ double bestFitnes(vector<individual<T>>& individuals, bool findMax)
 	double bestResult = individuals.at(0).getFitness();
 
 	for (auto& individ : individuals)
-		if (const T& fitnessOfIndivid{ individ.getFitness() }; 
+		if (const T& fitnessOfIndivid{ static_cast<T>(individ.getFitness()) }; 
 			findMax ? fitnessOfIndivid > bestResult : fitnessOfIndivid < bestResult)
 			bestResult = fitnessOfIndivid;
 
