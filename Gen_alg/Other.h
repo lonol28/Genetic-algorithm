@@ -39,13 +39,10 @@ double randomVal(const double left, const double right)
 		return left;
 }
 
-double getDelta(double left, double right)
+double getDelta(double min, double max)
 {
-	if (right < left)
-		swap(left, right);
-
-	if ((left >= 0.0 && right >= 0.0) || (left < 0.0 && right >= 0.0))
-		return right - left;
-	//else if (left < 0.0 && right < 0.0)
-	return (abs(right)) - left;
+	if (max > min)
+		return (max - min);
+	else
+		return (min - max);
 }

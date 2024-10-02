@@ -4,11 +4,11 @@
 
 void startGenetic()
 {
-	engine_BOOL geneticEngine;
+	engine_DOUBLE geneticEngine;
 
 	geneticEngine.setCountParams(10);
-	geneticEngine.setCountPopulation(50);
-	geneticEngine.setMaxCountGenerations(500);
+	geneticEngine.setCountPopulation(20);
+	geneticEngine.setMaxCountGenerations(100);
 	geneticEngine.setFindMaxOrMin(false);//true - find max; false - find min
 	geneticEngine.setPopulation();
 
@@ -16,7 +16,7 @@ void startGenetic()
 		start < end; ++start, geneticEngine.plusCountGenerations())
 	{
 		geneticEngine.tournament();
-		geneticEngine.crossingSwap();
+		geneticEngine.crossingBlend();
 		geneticEngine.mutationNewRandomNumberForOneParam();
 
 		geneticEngine.calculationFitnessAll();
